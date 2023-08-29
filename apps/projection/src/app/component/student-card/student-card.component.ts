@@ -17,11 +17,8 @@ import { ListItemTemplateDirective } from '../../directive/list-item-template-di
     class="bg-light-green">
     <img src="assets/img/student.webp" width="200px" />
 
-    <ng-template
-      list-item-template
-      let-student
-      [name]="student.firstname"
-      (delete)="delete(student.id)">
+    <ng-template list-item-template let-student>
+      <app-list-item [name]="student.firstname" (delete)="delete(student.id)" />
     </ng-template>
   </app-card>`,
   standalone: true,

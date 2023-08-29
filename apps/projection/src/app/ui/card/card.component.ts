@@ -8,14 +8,12 @@ import {
   Output,
   TemplateRef,
 } from '@angular/core';
-import { ListItemComponent } from '../list-item/list-item.component';
 import { ListItemTemplateDirective } from '../../directive/list-item-template-directive';
 import { Entity } from '../../model/card.model';
 
 @Component({
   selector: 'app-card',
   template: `<ng-content select="img"></ng-content>
-
     <section>
       <ng-container *ngFor="let item of list; trackBy: id">
         <ng-template
@@ -47,7 +45,7 @@ export class CardComponent {
   @Output() add = new EventEmitter<void>();
 
   @ContentChild(ListItemTemplateDirective, { read: TemplateRef })
-  listItemTemplate!: TemplateRef<ListItemComponent>;
+  listItemTemplate!: TemplateRef<any>;
 
   addNewItem() {
     this.add.emit();

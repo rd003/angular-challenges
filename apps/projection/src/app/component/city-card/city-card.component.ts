@@ -13,6 +13,7 @@ import { CardComponent } from '../../ui/card/card.component';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { ListItemComponent } from '../../ui/list-item/list-item.component';
+import { ListItemTemplateDirective } from '../../directive/list-item-template-directive';
 
 @Component({
   selector: 'app-city-card',
@@ -29,7 +30,13 @@ import { ListItemComponent } from '../../ui/list-item/list-item.component';
     </app-card>
   `,
   standalone: true,
-  imports: [CardComponent, NgIf, AsyncPipe, ListItemComponent],
+  imports: [
+    CardComponent,
+    NgIf,
+    AsyncPipe,
+    ListItemComponent,
+    ListItemTemplateDirective,
+  ],
   styles: [
     `
       .bg-light-purple {

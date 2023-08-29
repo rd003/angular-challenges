@@ -11,15 +11,20 @@ import {
   template: `
     <div class="border border-grey-300 py-1 px-2 flex justify-between">
       {{ name }}
-      <button (click)="delete.emit()">
+      <button (click)="deleteItem()">
         <img class="h-5" src="assets/svg/trash.svg" />
       </button>
     </div>
   `,
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class ListItemComponent {
   @Input() name!: string;
-  @Output() delete = new EventEmitter<number>();
+
+  @Output() delete = new EventEmitter<void>();
+
+  deleteItem() {
+    this.delete.emit();
+  }
 }
