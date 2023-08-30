@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   FakeHttpService,
   randStudent,
@@ -8,19 +8,25 @@ import { CardComponent } from '../../ui/card/card.component';
 import { ListItemComponent } from '../../ui/list-item/list-item.component';
 import { AsyncPipe } from '@angular/common';
 import { ListItemTemplateDirective } from '../../directive/list-item-template-directive';
+import { Student } from '../../model/student.model';
+import { Observable, catchError, of, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-student-card',
-  template: `<app-card
-    [list]="students$ | async"
-    (add)="add()"
-    class="bg-light-green">
-    <img src="assets/img/student.webp" width="200px" />
-
-    <ng-template list-item-template let-student>
-      <app-list-item [name]="student.firstname" (delete)="delete(student.id)" />
-    </ng-template>
-  </app-card>`,
+  template: `
+    <app-card
+      class="bg-light-green"
+      [list]="students$ | async"
+      (add)="addOne()">
+      <img src="assets/img/student.webp" alt="student image" width="200px" />
+      <ng-template list-item-template let-student>
+        <app-list-item
+          [name]="student.firstname"
+          (delete)="deleteOne(student.id)"></app-list-item>
+      </ng-template>
+    </app-card>
+  `,
   standalone: true,
   styles: [
     `
@@ -37,19 +43,32 @@ import { ListItemTemplateDirective } from '../../directive/list-item-template-di
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StudentCardComponent implements OnInit {
-  students$ = this.store.students$;
-  constructor(private http: FakeHttpService, private store: StudentStore) {}
+export class StudentCardComponent {
+  students$: Observable<Student[]> = this.store.students$;
 
-  add() {
+  addOne() {
     this.store.addOne(randStudent());
   }
 
-  delete(id: number) {
+  deleteOne(id: number) {
     this.store.deleteOne(id);
   }
 
-  ngOnInit(): void {
-    this.http.fetchStudents$.subscribe((s) => this.store.addAll(s));
+  constructor(
+    private readonly http: FakeHttpService,
+    private readonly store: StudentStore
+  ) {
+    this.http.fetchStudents$
+      .pipe(
+        tap((students) => {
+          this.store.addAll(students);
+        }),
+        catchError((error) => {
+          console.log(error);
+          return of(error);
+        }),
+        takeUntilDestroyed()
+      )
+      .subscribe();
   }
 }
