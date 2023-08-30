@@ -6,6 +6,7 @@ import {
   Input,
   TemplateRef,
 } from '@angular/core';
+import { ListTemplateDirective } from './directives/list-template.directive';
 
 @Component({
   selector: 'list',
@@ -28,6 +29,6 @@ import {
 export class ListComponent<TItem extends object> {
   @Input() list!: TItem[];
 
-  @ContentChild('listRef', { read: TemplateRef })
+  @ContentChild(ListTemplateDirective, { read: TemplateRef })
   listTemplateRef!: TemplateRef<unknown>;
 }
